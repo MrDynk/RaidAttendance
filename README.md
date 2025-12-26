@@ -31,7 +31,6 @@ The Attendance addon helps Turtle WoW players manage raid attendance and track c
 
 - `Attendance.lua`: Main logic for the addon.
 - `Attendance.toc`: Addon metadata.
-- `wow-api-type-definitions-main/`: API definitions for Turtle WoW (not included in this repo).
 
 ---
 For more details, see the source code or contact the addon author.
