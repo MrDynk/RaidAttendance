@@ -1,4 +1,0 @@
-## Interface: 11200
-## Title: Helper
-## Notes: <Addon description, you can use line breaks and different text colors>
-Helper.lua

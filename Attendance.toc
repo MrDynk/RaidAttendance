@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: Attendance
+## Notes: Tracks raid attendance and changes
+## SavedVariables: RaidData
+## Author: YourName
+## Version: 1.0
+
+Attendance.lua
