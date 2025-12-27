@@ -3,6 +3,6 @@
 ## Notes: Tracks raid attendance and changes
 ## SavedVariables: RaidData
 ## Author: YourName
-## Version: 1.1
+## Version: 1.0
 
 Attendance.lua
