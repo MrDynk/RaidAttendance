@@ -47,6 +47,14 @@ local function PrintTable(tbl, indent)
 	end
 end
 
+local function MessageSquadAttendance(msg)
+	if RaidData and RaidData.ChatIndex then
+		SendChatMessage(msg, "CHANNEL", nil, RaidData.ChatIndex)
+	else
+		print("Error: RaidData or ChatIndex not set.")
+	end
+end
+
 -- Utility: Print RaidData to chat
 local function PrintRaidData()
 	if not RaidData then
@@ -56,6 +64,78 @@ local function PrintRaidData()
 	print("---- RaidData ----")
 	PrintTable(RaidData)
 	print("------------------")
+end
+
+-- Utility: Send Raid Start Data to squadattendance
+local function MessageRaidStart()
+	if not RaidData then
+		print("No raid data available.")
+		return
+	end
+	MessageSquadAttendance("Start: " .. GetRealZoneText())
+	local raidersString
+	for k, v in pairs(RaidData.StartRaidMembers) do
+		raidersString = (raidersString and raidersString .. ", " or "") .. tostring(v)
+	end
+	MessageSquadAttendance(raidersString)
+end
+
+
+local function BuildRaidCSV()
+    local csv = "Raid Start, Late Arrival, ,Early Departure, \n"
+    --csv = csv .. "Name, Name, Time, Name, Time\n"
+
+    -- Raid Start
+    if RaidData and RaidData.StartRaidMembers then
+        for _, name in ipairs(RaidData.StartRaidMembers) do
+            csv = csv .. name .. ", , , ,\n"
+        end
+    end
+
+    -- Late Arrivals
+    if RaidData and RaidData.LateArrivals then
+        for _, entry in ipairs(RaidData.LateArrivals) do
+            csv = csv .. ", " .. entry.name .. ", " .. entry.time .. ", ,\n"
+        end
+    end
+
+    -- Early Departures
+    if RaidData and RaidData.EarlyDeparture then
+        for _, entry in ipairs(RaidData.EarlyDeparture) do
+            csv = csv .. ", , , " .. entry.name .. ", " .. entry.time .. "\n"
+        end
+    end
+
+    return csv
+end
+
+-- Utility: Send Raid Start Data to squadattendance
+local function MessageRaidEnd()
+	RaidData.FinalCsv = BuildRaidCSV()
+	MessageSquadAttendance(RaidData.FinalCsv)
+	
+	--MessageSquadAttendance(raidersString)
+end
+
+
+-- Utility: Send Raid Start Data to squadattendance
+local function RaiderLeaves(left,now)
+	local leaverString
+			for _, name in ipairs(left) do
+				--print(name .. " left the raid at " .. now)
+				table.insert(RaidData.EarlyDeparture, { name = name, time = now })
+				leaverString = (leaverString and leaverString .. ", " or "") .. name
+			end		
+	MessageSquadAttendance(leaverString .. " Leaves.")
+end
+-- Utility: Send Raider Joins to squadattendance
+local function RaiderJoins(joined,now)
+	local joinerString
+			for _, name in ipairs(joined) do
+				table.insert(RaidData.LateArrivals, { name = name, time = now })
+			joinerString = (joinerString and joinerString .. ", " or "") .. name
+			end
+	MessageSquadAttendance(joinerString .. " Joins.")
 end
 
 -- Utility: Find difference between two member lists
@@ -77,14 +157,18 @@ end
 -- Slash command: /startraid
 SLASH_STARTRAID1 = '/startraid'
 SlashCmdList["STARTRAID"] = function()
+	if GetChannelName("SquadAttendance") == 0 then
+		print("Error: You must be in the 'SquadAttendance' channel to start raid tracking.")
+		return
+	end
 	RaidData = {}
+	RaidData.ChatIndex = GetChannelName("SquadAttendance")
 	RaidData.StartRaidMembers= GetCurrentRaidMembers()
 	RaidData.LateArrivals = {}
 	RaidData.EarlyDeparture = {}
     RaidData.CurrentRaidMembers = GetCurrentRaidMembers()
 	isTrackingRaidChanges = true
-	print("Raid tracking started.")
-	PrintRaidData()
+	MessageRaidStart()
 end
 
 -- Slash command: /continueraid
@@ -98,7 +182,7 @@ end
 SLASH_STOPRAID1 = "/stopraid"
 SlashCmdList["STOPRAID"] = function()
 	isTrackingRaidChanges = false
-	print("Raid tracking stopped.")
+	MessageRaidEnd()
 end
 
 -- Slash command: /printraiddata
@@ -128,16 +212,10 @@ attendanceFrame:SetScript("OnEvent", function()
 		local now = GetDateTimeString()
 
 		if TableCount(joined) > 0 then
-			for _, name in ipairs(joined) do
-				print(name .. " joined the raid at " .. now)
-				table.insert(RaidData.LateArrivals, { name = name, time = now })
-			end
+			RaiderJoins(joined,now)
 		end
 		if TableCount(left) > 0 then
-			for _, name in ipairs(left) do
-				print(name .. " left the raid at " .. now)
-				table.insert(RaidData.EarlyDeparture, { name = name, time = now })
-			end
+			RaiderLeaves(left,now)
 		end
 
 		-- Update the saved raid members list
