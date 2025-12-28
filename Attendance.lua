@@ -81,32 +81,35 @@ local function MessageRaidStart()
 end
 
 
+local function table_length(t)
+	local count = 0
+	if t then
+		for _ in pairs(t) do count = count + 1 end
+	end
+	return count
+end
+
 local function BuildRaidCSV()
-    local csv = "Raid Start, Late Arrival, ,Early Departure, \n"
-    --csv = csv .. "Name, Name, Time, Name, Time\n"
-
-    -- Raid Start
-    if RaidData and RaidData.StartRaidMembers then
-        for _, name in ipairs(RaidData.StartRaidMembers) do
-            csv = csv .. name .. ", , , ,\n"
-        end
-    end
-
-    -- Late Arrivals
-    if RaidData and RaidData.LateArrivals then
-        for _, entry in ipairs(RaidData.LateArrivals) do
-            csv = csv .. ", " .. entry.name .. ", " .. entry.time .. ", ,\n"
-        end
-    end
-
-    -- Early Departures
-    if RaidData and RaidData.EarlyDeparture then
-        for _, entry in ipairs(RaidData.EarlyDeparture) do
-            csv = csv .. ", , , " .. entry.name .. ", " .. entry.time .. "\n"
-        end
-    end
-
-    return csv
+	local csv = "Raid Start, Late Arrival, , Early Departure,\n"
+	local start = RaidData and RaidData.StartRaidMembers or {}
+	local late = RaidData and RaidData.LateArrivals or {}
+	local early = RaidData and RaidData.EarlyDeparture or {}
+	local maxLen = math.max(table_length(start), table_length(late), table_length(early))
+	for i = 1, maxLen do
+		local startName = start[i] or ""
+		local lateName, lateTime = "", ""
+		if late[i] then
+			lateName = late[i].name or ""
+			lateTime = late[i].time or ""
+		end
+		local earlyName, earlyTime = "", ""
+		if early[i] then
+			earlyName = early[i].name or ""
+			earlyTime = early[i].time or ""
+		end
+		csv = csv .. string.format("%s,%s,%s,%s,%s\n", startName, lateName, lateTime, earlyName, earlyTime)
+	end
+	return csv
 end
 
 -- Utility: Send Raid Start Data to squadattendance
