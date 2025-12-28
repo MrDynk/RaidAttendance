@@ -8,7 +8,7 @@ The Attendance addon helps Turtle WoW players manage raid attendance and track c
   Begins tracking raid attendance. Captures the current raid members in the global variable `RaidData` (field: `RaidData.StartRaidMembers`) then sends instance information and starting raid members to the SquadAttendance channel. Also sets the `isTrackingRaidChanges` boolean to `true`.
 
 - `/continueraid`  
-  Sets the `isTrackingRaidChanges` boolean to `true`, allowing the addon to continue tracking raid changes without resetting `RaidData`.
+  Sets the `isTrackingRaidChanges` boolean to `true`, allowing the addon to continue tracking raid changes without resetting `RaidData`. Attendance takers should use this command in the event that they disconnect from Twow while in an active raid, it will continue tracking without losing any previous data.
 
 - `/stopraid`  
   Sets the `isTrackingRaidChanges` boolean to `false` and prints a csv friendly format to the SquadAttendance Channel.
