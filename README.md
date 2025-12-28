@@ -26,14 +26,12 @@ The Attendance addon helps Turtle WoW players manage raid attendance and track c
 
 ### Chat Message Functionality, Bot & Discord Integration
 
-Whenever a player joins late or leaves early, the addon automatically sends a message to the the Squadattendance channel window. These messages are also parsed by Wagon's bot, which enables automated attendance tracking and integration with external tools, including Discord:
+Whenever a player joins late or leaves early, the addon automatically sends a message to the the Squadattendance channel. These messages are also parsed by Wagon's bot, which enables automated attendance tracking and integration with external tools, including Discord:
 
 - **Late Arrivals:**
-  - When a new player joins the raid after tracking has started, a message is printed to the Squadattendance channel with their name and the time they joined. Wagon's bot listens for these messages to record late arrivals and forwards the data to Discord.
+  - When a new player joins the raid after tracking has started, the message "Playername Joins." is printed to the Squadattendance channel. Wagon's bot listens for these messages and forwards the data to Discord.
 - **Early Departures:**
-  - When a player leaves the raid before tracking ends, a message is printed to the Squadattendance channel with their name and the time they left. Wagon's bot listens for these messages to record early departures and forwards the data to Discord.
-
-These chat messages help raid leaders and members stay informed in real time about attendance changes during the raid, allow Wagon's bot to automate attendance record-keeping, and ensure that attendance data is sent to Discord for external tracking and notifications.
+  - When a player leaves the raid before tracking ends,the message "Playername Leaves." is printed to the Squadattendance channel. Wagon's bot listens for these messages and forwards the data to Discord.
 
 ## Saved Variables
 
