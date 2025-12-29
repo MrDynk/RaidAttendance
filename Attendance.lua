@@ -76,7 +76,8 @@ local function MessageRaidStart()
 	for k, v in pairs(RaidData.StartRaidMembers) do
 		raidersString = (raidersString and raidersString .. ", " or "") .. tostring(v)
 	end
-	MessageSquadAttendance("Starting Raid " .. GetRealZoneText() .. ": " .. raidersString)
+	MessageSquadAttendance("______Starting Raid " .. GetRealZoneText() .. "______")
+	MessageSquadAttendance(raidersString)
 end
 
 
@@ -114,7 +115,7 @@ end
 -- Utility: Send Raid Start Data to squadattendance
 local function MessageRaidEnd()
 	RaidData.FinalCsv = BuildRaidCSV()
-	MessageSquadAttendance("Raid Ended")
+	MessageSquadAttendance("______Raid Ended. Sending CSV Friendly Data(semicolon denotes new line)______")
 	MessageSquadAttendance(RaidData.FinalCsv)
 	
 	--MessageSquadAttendance(raidersString)
