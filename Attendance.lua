@@ -89,7 +89,7 @@ local function table_length(t)
 end
 
 local function BuildRaidCSV()
-	local csv = "Raid Start, Late Arrival, , Early Departure,\n"
+	local csv = "Raid Start, Late Arrival, , Early Departure,;"
 	local start = RaidData and RaidData.StartRaidMembers or {}
 	local late = RaidData and RaidData.LateArrivals or {}
 	local early = RaidData and RaidData.EarlyDeparture or {}
@@ -106,7 +106,7 @@ local function BuildRaidCSV()
 			earlyName = early[i].name or ""
 			earlyTime = early[i].time or ""
 		end
-		csv = csv .. string.format("%s,%s,%s,%s,%s\n", startName, lateName, lateTime, earlyName, earlyTime)
+		csv = csv .. string.format("%s,%s,%s,%s,%s;", startName, lateName, lateTime, earlyName, earlyTime)
 	end
 	return csv
 end
