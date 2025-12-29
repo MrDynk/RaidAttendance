@@ -72,12 +72,11 @@ local function MessageRaidStart()
 		print("No raid data available.")
 		return
 	end
-	MessageSquadAttendance("Start: " .. GetRealZoneText())
 	local raidersString
 	for k, v in pairs(RaidData.StartRaidMembers) do
 		raidersString = (raidersString and raidersString .. ", " or "") .. tostring(v)
 	end
-	MessageSquadAttendance(raidersString)
+	MessageSquadAttendance("Starting Raid " .. GetRealZoneText() .. ": " .. raidersString)
 end
 
 
