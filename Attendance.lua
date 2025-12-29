@@ -114,6 +114,7 @@ end
 -- Utility: Send Raid Start Data to squadattendance
 local function MessageRaidEnd()
 	RaidData.FinalCsv = BuildRaidCSV()
+	MessageSquadAttendance("Raid Ended")
 	MessageSquadAttendance(RaidData.FinalCsv)
 	
 	--MessageSquadAttendance(raidersString)
