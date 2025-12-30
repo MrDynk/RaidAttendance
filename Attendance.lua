@@ -55,6 +55,28 @@ local function MessageSquadAttendance(msg)
 	end
 end
 
+local function MessageSquadAttendanceChunked(parts, delimiter, maxLength)
+	delimiter = delimiter or ", "
+	maxLength = maxLength or 200 -- Safe limit under 255
+	local chunk = nil
+	for _, part in ipairs(parts or {}) do
+		local piece = tostring(part or "")
+		if piece ~= "" then
+			if not chunk then
+				chunk = piece
+			elseif string.len(chunk) + string.len(delimiter) + string.len(piece) <= maxLength then
+				chunk = chunk .. delimiter .. piece
+			else
+				MessageSquadAttendance(chunk)
+				chunk = piece
+			end
+		end
+	end
+	if chunk and chunk ~= "" then
+		MessageSquadAttendance(chunk)
+	end
+end
+
 -- Utility: Print RaidData to chat
 local function PrintRaidData()
 	if not RaidData then
@@ -72,12 +94,8 @@ local function MessageRaidStart()
 		print("No raid data available.")
 		return
 	end
-	local raidersString
-	for k, v in pairs(RaidData.StartRaidMembers) do
-		raidersString = (raidersString and raidersString .. ", " or "") .. tostring(v)
-	end
 	MessageSquadAttendance("______Starting Raid " .. GetRealZoneText() .. "______")
-	MessageSquadAttendance(raidersString)
+	MessageSquadAttendanceChunked(RaidData.StartRaidMembers, ", ", 200)
 end
 
 
@@ -207,6 +225,11 @@ end
 SLASH_PRINTRAIDDATA1 = "/printraiddata"
 SlashCmdList["PRINTRAIDDATA"] = function()
 	PrintRaidData()
+end
+
+SLASH_TESTRAIDSTART1 = "/testraidstart"
+SlashCmdList["TESTRAIDSTART"] = function()
+	MessageRaidStart()
 end
 
 -- Event handler for RAID_ROSTER_UPDATE
