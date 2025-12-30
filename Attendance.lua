@@ -116,9 +116,23 @@ end
 local function MessageRaidEnd()
 	RaidData.FinalCsv = BuildRaidCSV()
 	MessageSquadAttendance("______Raid Ended. Sending CSV Friendly Data(semicolon denotes new line)______")
-	MessageSquadAttendance(RaidData.FinalCsv)
 	
-	--MessageSquadAttendance(raidersString)
+	-- Split the CSV into chunks to avoid chat message length limits
+	local csv = RaidData.FinalCsv
+	local maxLength = 200  -- Safe limit under 255
+	local start = 1
+	while start <= string.len(csv) do
+		local endPos = start + maxLength - 1
+		if endPos > string.len(csv) then endPos = string.len(csv) end
+		-- Ensure we don't cut in the middle of a row (split on semicolon if possible)
+		local lastSemicolon = string.find(string.sub(csv, start, endPos), ";[^;]*$")
+		if lastSemicolon then
+			endPos = start + lastSemicolon - 1
+		end
+		local chunk = string.sub(csv, start, endPos)
+		MessageSquadAttendance(chunk)
+		start = endPos + 1
+	end
 end
 
 
