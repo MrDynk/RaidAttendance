@@ -131,7 +131,7 @@ local function BuildRaidCSV()
 end
 
 -- Utility: Send Raid Start Data to squadattendance
-local function MessageRaidEnd()
+local function MessageRaidEndCSV()
 	RaidData.FinalCsv = BuildRaidCSV()
 	MessageSquadAttendance("______Raid Ended. Sending CSV Friendly Data(semicolon denotes new line)______")
 	
@@ -151,6 +151,36 @@ local function MessageRaidEnd()
 		MessageSquadAttendance(chunk)
 		start = endPos + 1
 	end
+end
+
+local function MessageRaidEnd()
+	MessageSquadAttendance("______Raid Ended.______")
+
+	if not RaidData then
+		print("No raid data available.")
+		return
+	end
+
+	local attendanceParts = {}
+	local seen = {}
+
+	for _, name in ipairs(RaidData.StartRaidMembers or {}) do
+		if name and name ~= "" and not seen[name] then
+			seen[name] = true
+			table.insert(attendanceParts, name)
+		end
+	end
+
+	for _, entry in ipairs(RaidData.LateArrivals or {}) do
+		local name = (type(entry) == "table") and entry.name or entry
+		if name and name ~= "" and not seen[name] then
+			seen[name] = true
+			table.insert(attendanceParts, name)
+		end
+	end
+
+	RaidData.EndAttendance = table.concat(attendanceParts, ", ")
+	MessageSquadAttendanceChunked(attendanceParts, ", ", 250)
 end
 
 
