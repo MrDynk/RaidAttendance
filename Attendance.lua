@@ -154,7 +154,7 @@ local function MessageRaidEndCSV()
 end
 
 local function MessageRaidEnd()
-	MessageSquadAttendance("______Raid Ended.______")
+	MessageSquadAttendance("______Raid Ended. Attendees______")
 
 	if not RaidData then
 		print("No raid data available.")
@@ -192,7 +192,7 @@ local function RaiderLeaves(left,now)
 				table.insert(RaidData.EarlyDeparture, { name = name, time = now })
 				leaverString = (leaverString and leaverString .. ", " or "") .. name
 			end		
-	MessageSquadAttendance(leaverString .. " Leaves.")
+	MessageSquadAttendance(leaverString .. " Leaves @ " .. tostring(now) .. ".")
 end
 -- Utility: Send Raider Joins to squadattendance
 local function RaiderJoins(joined,now)
@@ -201,7 +201,7 @@ local function RaiderJoins(joined,now)
 				table.insert(RaidData.LateArrivals, { name = name, time = now })
 			joinerString = (joinerString and joinerString .. ", " or "") .. name
 			end
-	MessageSquadAttendance(joinerString .. " Joins.")
+	MessageSquadAttendance(joinerString .. " Joins @ " .. tostring(now) .. ".")
 end
 
 -- Utility: Find difference between two member lists
