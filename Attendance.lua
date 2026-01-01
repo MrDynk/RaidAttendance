@@ -154,7 +154,7 @@ local function MessageRaidEndCSV()
 end
 
 local function MessageRaidEnd()
-	MessageSquadAttendance("> ______Raid Ended [".. date("%m-%d %H:%M")  .."] Attendees:______")
+	MessageSquadAttendance("______Raid Ended [".. date("%m-%d %H:%M")  .."] Attendees:______")
 
 	if not RaidData then
 		print("No raid data available.")
