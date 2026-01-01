@@ -94,10 +94,44 @@ local function MessageRaidStart()
 		print("No raid data available.")
 		return
 	end
-	MessageSquadAttendance("> ______ Starting Raid " .. GetRealZoneText() .." [".. date("%m-%d %H:%M")  .."] ______")
+	---SendChatMessage(" https://tenor.com/view/naxx-gdkp-naxxgdkp-gif-27169327", "CHANNEL", nil, RaidData.ChatIndex)
+	MessageSquadAttendance("# ______ Starting " .. RaidData.RaidZone .." [".. date("%m-%d %H:%M")  .."] ______")
+	MessageSquadAttendance("> Starting Roster:")
 	MessageSquadAttendanceChunked(RaidData.StartRaidMembers, ", ", 200)
 end
 
+local function MessageRaidEnd()
+	MessageSquadAttendance("> Raid Ending. Attendees:")
+	 
+
+	if not RaidData then
+		print("No raid data available.")
+		return
+	end
+
+	local attendanceParts = {}
+	local seen = {}
+
+	for _, name in ipairs(RaidData.StartRaidMembers or {}) do
+		if name and name ~= "" and not seen[name] then
+			seen[name] = true
+			table.insert(attendanceParts, name)
+		end
+	end
+
+	for _, entry in ipairs(RaidData.LateArrivals or {}) do
+		local name = (type(entry) == "table") and entry.name or entry
+		if name and name ~= "" and not seen[name] then
+			seen[name] = true
+			table.insert(attendanceParts, name)
+		end
+	end
+
+	RaidData.EndAttendance = table.concat(attendanceParts, ", ")
+	MessageSquadAttendanceChunked(attendanceParts, ", ", 250)
+	MessageSquadAttendance("# ______" .. RaidData.RaidZone .. " Finished [".. date("%m-%d %H:%M")  .."] ______")
+	---SendChatMessage("https://cdn.discordapp.com/emojis/1380636835713257622.webp?size=96&animated=true", "CHANNEL", nil, RaidData.ChatIndex)
+end
 
 local function table_length(t)
 	local count = 0
@@ -153,37 +187,6 @@ local function MessageRaidEndCSV()
 	end
 end
 
-local function MessageRaidEnd()
-	MessageSquadAttendance("______Raid Ended [".. date("%m-%d %H:%M")  .."] ______")
-	MessageSquadAttendance("Attendees:")
-	 
-
-	if not RaidData then
-		print("No raid data available.")
-		return
-	end
-
-	local attendanceParts = {}
-	local seen = {}
-
-	for _, name in ipairs(RaidData.StartRaidMembers or {}) do
-		if name and name ~= "" and not seen[name] then
-			seen[name] = true
-			table.insert(attendanceParts, name)
-		end
-	end
-
-	for _, entry in ipairs(RaidData.LateArrivals or {}) do
-		local name = (type(entry) == "table") and entry.name or entry
-		if name and name ~= "" and not seen[name] then
-			seen[name] = true
-			table.insert(attendanceParts, name)
-		end
-	end
-
-	RaidData.EndAttendance = table.concat(attendanceParts, ", ")
-	MessageSquadAttendanceChunked(attendanceParts, ", ", 250)
-end
 
 
 -- Utility: Send Raid Start Data to squadattendance
@@ -230,6 +233,7 @@ SlashCmdList["STARTRAID"] = function()
 		return
 	end
 	RaidData = {}
+	RaidData.RaidZone = GetRealZoneText()
 	RaidData.ChatIndex = GetChannelName("SquadAttendance")
 	RaidData.StartRaidMembers= GetCurrentRaidMembers()
 	RaidData.LateArrivals = {}
