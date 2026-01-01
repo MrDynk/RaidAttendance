@@ -94,7 +94,7 @@ local function MessageRaidStart()
 		print("No raid data available.")
 		return
 	end
-	MessageSquadAttendance("______Starting Raid " .. GetRealZoneText() .. "______")
+	MessageSquadAttendance("> ______ Starting Raid " .. GetRealZoneText() .." [".. date("%m-%d %H:%M")  .."]______")
 	MessageSquadAttendanceChunked(RaidData.StartRaidMembers, ", ", 200)
 end
 
@@ -154,7 +154,7 @@ local function MessageRaidEndCSV()
 end
 
 local function MessageRaidEnd()
-	MessageSquadAttendance("______Raid Ended. Attendees:______")
+	MessageSquadAttendance("> ______Raid Ended [".. date("%m-%d %H:%M")  .."] Attendees:______")
 
 	if not RaidData then
 		print("No raid data available.")
