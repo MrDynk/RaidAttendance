@@ -18,7 +18,12 @@ local isTrackingRaidChanges = false
 
 -- Utility: Get current date/time string
 local function GetDateTimeString()
-	return date("%Y-%m-%d %H:%M:%S")
+	return date("%m-%d %H:%M")
+end
+
+-- 
+local function GetTimeString()
+	return date("%H:%M")
 end
 
 -- Utility: Get current raid members as a table of names
@@ -286,7 +291,7 @@ attendanceFrame:SetScript("OnEvent", function()
 		local currentMembers = GetCurrentRaidMembers()
 
 		local joined, left = FindDifference(prevMembers, currentMembers)
-		local now = GetDateTimeString()
+		local now = GetTimeString()
 
 		if TableCount(joined) > 0 then
 			RaiderJoins(joined,now)
