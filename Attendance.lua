@@ -26,18 +26,6 @@ local function GetTimeString()
 	return date("%H:%M")
 end
 
-local function IsPlayerInGuild(player)
-	local numGuildMembers = GetNumGuildMembers()
-	local name, rank, rankIndex, level, class, zone, note, officernote, online, status
-	for i = 1, numGuildMembers, 1 do
-		name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i)
-		if name == player then
-			return true
-		end
-	end
-	return false
-end
-
 -- Utility: Get current raid members as a table of names
 local function GetCurrentRaidMembers()
 	local members = {}
@@ -45,9 +33,7 @@ local function GetCurrentRaidMembers()
 	for i = 1, numRaidMembers do
 		local name = GetRaidRosterInfo(i)
 		if name then
-			if IsPlayerInGuild(name) then
 			table.insert(members, name)
-			end
 		end
 	end
 	return members
@@ -212,25 +198,20 @@ end
 local function RaiderLeaves(left,now)
 	local leaverString
 			for _, name in ipairs(left) do
-				if IsPlayerInGuild(name) then
+				--print(name .. " left the raid at " .. now)
 				table.insert(RaidData.EarlyDeparture, { name = name, time = now })
 				leaverString = (leaverString and leaverString .. ", " or "") .. name
-				MessageSquadAttendance(leaverString .. " Leaves @ " .. tostring(now) .. ".")
-				end
 			end		
-	
+	MessageSquadAttendance(leaverString .. " Leaves @ " .. tostring(now) .. ".")
 end
 -- Utility: Send Raider Joins to squadattendance
 local function RaiderJoins(joined,now)
 	local joinerString
 			for _, name in ipairs(joined) do
-				if IsPlayerInGuild(name) then
-					table.insert(RaidData.LateArrivals, { name = name, time = now })
-					joinerString = (joinerString and joinerString .. ", " or "") .. name
-					MessageSquadAttendance(joinerString .. " Joins @ " .. tostring(now) .. ".")
-				end				
+				table.insert(RaidData.LateArrivals, { name = name, time = now })
+			joinerString = (joinerString and joinerString .. ", " or "") .. name
 			end
-
+	MessageSquadAttendance(joinerString .. " Joins @ " .. tostring(now) .. ".")
 end
 
 -- Utility: Find difference between two member lists
@@ -247,16 +228,6 @@ local function FindDifference(oldList, newList)
 		if not newSet[name] then table.insert(left, name) end
 	end
 	return joined, left
-end
-
-
-
-
--- Slash command: /stopraid
-SLASH_PRINTGUILD1 = "/printguild"
-SlashCmdList["PRINTGUILD"] = function()
-	print("Guild Members:")
-	GetGuildMembers()
 end
 
 -- Slash command: /startraid
