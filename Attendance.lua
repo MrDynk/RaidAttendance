@@ -212,11 +212,9 @@ end
 local function RaiderLeaves(left,now)
 	local leaverString
 			for _, name in ipairs(left) do
-				if IsPlayerInGuild(name) then
 				table.insert(RaidData.EarlyDeparture, { name = name, time = now })
 				leaverString = (leaverString and leaverString .. ", " or "") .. name
 				MessageSquadAttendance(leaverString .. " Leaves @ " .. tostring(now) .. ".")
-				end
 			end		
 	
 end
