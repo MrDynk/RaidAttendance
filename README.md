@@ -24,6 +24,8 @@ The Attendance addon helps Turtle WoW players manage raid attendance and track c
   - If there are fewer members, it logs the names of those who left to the Squadattendance channel and adds them to `RaidData.EarlyDeparture` with the date/time and player name.
   - Updates `RaidData.CurrentRaidMembers` to reflect the current raid members.
 
+**Guild membership timing note:** Right after login, the client’s guild roster cache may not be populated yet. Late arrivals are now classified by checking the raid unit’s guild membership when possible; if that can’t be determined immediately, the addon requests a guild roster refresh and retries for a short grace period before classifying as a pug.
+
 ### Chat Message Functionality, Bot & Discord Integration
 
 Whenever a player joins late or leaves early, the addon automatically sends a message to the the Squadattendance channel. These messages are also parsed by Wagon's bot, which enables automated attendance tracking and integration with external tools, including Discord:
