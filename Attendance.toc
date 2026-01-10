@@ -5,4 +5,5 @@
 ## Author: YourName
 ## Version: 1.2
 
+RaidChanges.lua
 Attendance.lua
