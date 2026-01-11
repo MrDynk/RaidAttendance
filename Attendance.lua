@@ -4,7 +4,7 @@ local function DebugLog(msg)
 end
 
 -- Toggle these to control debug verbosity.
-local DEBUG_GUILD_DETECTION = true
+local DEBUG_GUILD_DETECTION = false
 
 local function DebugGuild(msg)
 	if DEBUG_GUILD_DETECTION then
@@ -197,8 +197,10 @@ local function MessageRaidStart()
 	MessageSquadAttendance("# ______ Starting " .. RaidData.RaidZone .. " [" .. date("%m-%d %H:%M") .. "] ______")
 	MessageSquadAttendance("> Starting Roster:")
 	MessageSquadAttendanceChunked(RaidData.StartRaidGuildMembers, ", ", 200, false)
-	MessageSquadAttendance("||> Starting PUGs:||")
-	MessageSquadAttendanceChunked(RaidData.StartRaidPugs, ", ", 200, true)
+	if RaidData.StartRaidPugs and TableCount(RaidData.StartRaidPugs) > 0 then
+		MessageSquadAttendance("||> Starting PUGs:||")
+		MessageSquadAttendanceChunked(RaidData.StartRaidPugs, ", ", 200, true)
+	end
 end
 
 local function MessageRaidEnd()
@@ -231,8 +233,6 @@ local function MessageRaidEnd()
 	RaidData.EndAttendanceGuildMembers = table.concat(attendancePartsGuild, ", ")
 	MessageSquadAttendanceChunked(attendancePartsGuild, ", ", 250,false)
 	
-
-	MessageSquadAttendance("||> Pug Attendees:||")
 	local attendancePartsPugs = {}
 	for _, name in ipairs(RaidData.StartRaidPugs or {}) do
 		if name and name ~= "" and not seen[name] then
@@ -248,7 +248,10 @@ local function MessageRaidEnd()
 		end
 	end
 	RaidData.EndAttendancePugs = table.concat(attendancePartsPugs, ", ")
-	MessageSquadAttendanceChunked(attendancePartsPugs, ", ", 250,true)
+	if TableCount(attendancePartsPugs) > 0 then
+		MessageSquadAttendance("||> Pug Attendees:||")
+		MessageSquadAttendanceChunked(attendancePartsPugs, ", ", 250,true)
+	end
 	MessageSquadAttendance("# ______" .. RaidData.RaidZone .. " Finished [" .. date("%m-%d %H:%M") .. "] ______")
 
 	---SendChatMessage("https://cdn.discordapp.com/emojis/1380636835713257622.webp?size=96&animated=true", "CHANNEL", nil, RaidData.ChatIndex)
@@ -297,9 +300,12 @@ SlashCmdList["STARTRAID"] = function()
 		print("Error: You must be in the 'SquadAttendance' channel to start raid tracking.")
 		return
 	end
-	RaidData = {}
+	--RaidData = {}
 	RaidData.RaidZone = GetRealZoneText()
+	if not DEBUG_GUILD_DETECTION then
 	RaidData.ChatIndex = GetChannelName("SquadAttendance")
+	end
+	
 	GetStartRaidMembers()
 	RaidData.LateArrivalsGuildMembers = {}
 	RaidData.LateArrivalsPugs = {}
@@ -339,6 +345,13 @@ SLASH_ATTDEBUG1 = "/attdebug"
 SlashCmdList["ATTDEBUG"] = function()
 	DEBUG_GUILD_DETECTION = not DEBUG_GUILD_DETECTION
 	print("[Attendance Debug] DEBUG_GUILD_DETECTION=" .. tostring(DEBUG_GUILD_DETECTION))
+	if GetChannelName("SquadAttendanceDebug") == 0 then
+		print("Error: You must be in the 'SquadAttendanceDebug' channel to start debugging.")
+		return
+	end
+	RaidData.ChatIndex = GetChannelName("SquadAttendanceDebug")
+	print("[Attendance Debug] ChatIndex=" .. tostring(RaidData.ChatIndex))
+
 end
 
 SLASH_ATTDEBUGPENDING1 = "/attdebugpending"
