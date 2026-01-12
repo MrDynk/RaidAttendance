@@ -161,7 +161,7 @@ local function MessageSquadAttendanceChunked(parts, delimiter, maxLength, addspo
 				chunk = chunk .. delimiter .. piece
 			else
 				if addspoilers then
-					chunk = "||" .. chunk .. "||"
+					chunk = "" .. chunk .. ""
 				end
 				MessageSquadAttendance(chunk)
 				chunk = piece
@@ -170,7 +170,7 @@ local function MessageSquadAttendanceChunked(parts, delimiter, maxLength, addspo
 	end
 	if chunk and chunk ~= "" then
 		if addspoilers then
-			chunk = "||" .. chunk .. "||"
+			chunk = "" .. chunk .. ""
 		end
 		MessageSquadAttendance(chunk)
 	end
@@ -198,7 +198,7 @@ local function MessageRaidStart()
 	MessageSquadAttendance("> Starting Roster:")
 	MessageSquadAttendanceChunked(RaidData.StartRaidGuildMembers, ", ", 200, false)
 	if RaidData.StartRaidPugs and TableCount(RaidData.StartRaidPugs) > 0 then
-		MessageSquadAttendance("||> Starting PUGs:||")
+		MessageSquadAttendance("> Starting PUGs:")
 		MessageSquadAttendanceChunked(RaidData.StartRaidPugs, ", ", 200, true)
 	end
 end
@@ -249,7 +249,7 @@ local function MessageRaidEnd()
 	end
 	RaidData.EndAttendancePugs = table.concat(attendancePartsPugs, ", ")
 	if TableCount(attendancePartsPugs) > 0 then
-		MessageSquadAttendance("||> Pug Attendees:||")
+		MessageSquadAttendance("> Pug Attendees:")
 		MessageSquadAttendanceChunked(attendancePartsPugs, ", ", 250,true)
 	end
 	MessageSquadAttendance("# ______" .. RaidData.RaidZone .. " Finished [" .. date("%m-%d %H:%M") .. "] ______")
