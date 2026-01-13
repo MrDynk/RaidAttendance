@@ -300,7 +300,7 @@ SlashCmdList["STARTRAID"] = function()
 		print("Error: You must be in the 'SquadAttendance' channel to start raid tracking.")
 		return
 	end
-	--RaidData = {}
+	RaidData = {}
 	RaidData.RaidZone = GetRealZoneText()
 	if not DEBUG_GUILD_DETECTION then
 	RaidData.ChatIndex = GetChannelName("SquadAttendance")
